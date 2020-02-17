@@ -17,6 +17,12 @@ echo "send me a secret" | docker run juliaaano/encrypt > secret.txt.asc
 cat my-sample-file.txt | docker run juliaaano/encrypt | pbcopy
 ```
 
+### Encrypt binary (non-text) files
+
+```
+docker run -v $(pwd):/tmp juliaaano/encrypt /tmp/myfile.zip > myfile.zip.asc
+```
+
 ### It works with Podman
 
 ```
