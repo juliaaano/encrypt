@@ -1,0 +1,19 @@
+name: Docker Image Build and Push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Build and push
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: juliaaano/encrypt
+          username: ${{ secrets.DOCKERHUB_USR }}
+          password: ${{ secrets.DOCKERHUB_PWD }}
