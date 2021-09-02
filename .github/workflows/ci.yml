@@ -45,7 +45,6 @@ jobs:
             CREATED_AT=${{ env.datetime }}
             GITHUB_SHA=${{ github.sha }}
       - name: push image to ghcr.io
-        id: push-image-ghcr-io
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build-image.outputs.image }}
@@ -54,7 +53,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: push image to docker.io
-        id: push-image-docker-io
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.build-image.outputs.image }}
