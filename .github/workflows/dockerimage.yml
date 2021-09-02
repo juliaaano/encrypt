@@ -2,18 +2,51 @@ name: Docker Image Build and Push
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
+    paths-ignore:
+      - "README.md"
+  schedule:
+    #        ┌───────────── minute (0 - 59)
+    #        │  ┌───────────── hour (0 - 23)
+    #        │  │ ┌───────────── day of the month (1 - 31)
+    #        │  │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+    #        │  │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        *  * * * *
+    - cron: "15 1 * * 1"
+
+permissions:
+  packages: write
+
+concurrency:
+  group: ci
+  cancel-in-progress: false
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@master
-      - name: Build and push
-        uses: elgohr/Publish-Docker-Github-Action@master
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
         with:
-          name: juliaaano/encrypt
-          username: ${{ secrets.DOCKERHUB_USR }}
-          password: ${{ secrets.DOCKERHUB_PWD }}
+          image: juliaaano/encrypt
+          tags: latest ${{ github.sha }}
+          dockerfiles: |
+            ./Dockerfile
+          build-args: |
+            CREATED_AT=todo
+            GITHUB_SHA=${{ github.sha }}
+      - name: push image
+        id: push-image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
