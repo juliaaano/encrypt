@@ -1,5 +1,7 @@
 # Encrypt a message to Juliano
 
+[![ci](https://github.com/juliaaano/encrypt/actions/workflows/ci.yml/badge.svg)](https://github.com/juliaaano/encrypt/actions/workflows/ci.yml)
+
 ```
 echo "send me a secret" | docker run -i juliaaano/encrypt
 cat my-sample-file.txt | docker run -i juliaaano/encrypt
